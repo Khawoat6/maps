@@ -1,0 +1,20 @@
+{
+    "routes": [
+      {
+        "route": "/index.html",
+        "headers": { "Cache-Control": "public, max-age=600, immutable" }
+      },
+      {
+        "route": "/main.css",
+        "headers": { "Cache-Control": "public, max-age=600, immutable" }
+      },
+      {
+        "route": "/props.js",
+        "headers": { "Cache-Control": "public, max-age=604800, immutable" }
+      },
+      {
+        "route": "/stations.js",
+        "headers": { "Cache-Control": "public, max-age=604800, immutable" }
+      }
+    ]
+  }

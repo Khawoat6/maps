@@ -97,7 +97,9 @@ input[type="number"] {
 a {
   text-decoration: none;
   font-weight: bold;
-}
-a:visited {
   color: black;
+}
+
+.version {
+  color: #191919;
 }
