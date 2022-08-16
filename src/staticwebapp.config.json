@@ -2,11 +2,11 @@
     "routes": [
       {
         "route": "/index.html",
-        "headers": { "Cache-Control": "public, max-age=600, immutable" }
+        "headers": { "Cache-Control": "public, max-age=60, immutable" }
       },
       {
         "route": "/main.css",
-        "headers": { "Cache-Control": "public, max-age=600, immutable" }
+        "headers": { "Cache-Control": "public, max-age=60, immutable" }
       },
       {
         "route": "/props.js",
