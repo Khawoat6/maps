@@ -1,0 +1,238 @@
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://api.longdo.com/map/?key=eec67542ba793aaaa24508517bfc483b"></script>
+    <script src="props.js"></script>
+    <script src="stations.js"></script>
+    <link rel="stylesheet" href="main.css">
+    <title>ทำเล</title>
+  </head>
+  <body>
+    <div class="controlContainer">
+      <div class="controlGroup">
+        <input type="checkbox" id="isHome" name="isHome"/>
+        <label for="isHome">Home</label><br>
+
+        <input type="checkbox" id="isTownhome" name="isTownhome"/>
+        <label for="isTownhome">Townhome</label><br>
+
+        <input type="checkbox" id="isCondo" name="isCondo" checked/>
+        <label for="isCondo">Condo</label><br>
+      </div>
+      <div class="controlGroup">
+        <label for="priceFrom">ราคา เริ่มต้น</label>
+        <input type="number" id="priceFrom" step="500000" value="0"/><br>
+
+        <label for="priceTo">ราคา ไม่เกิน</label>
+        <input type="number" id="priceTo" step="500000" value="7000000"/><br>
+        <br/>
+        <label for="yearFrom">สร้างหลัง ปี</label>
+        <input type="number" id="yearFrom" value="2018"/><br>
+
+        <label for="yearTo">สร้างก่อน ปี</label>
+        <input type="number" id="yearTo" value="2022"/><br>
+      </div>
+      <div class="controlGroup">
+        Developer<br/>
+        <input type="checkbox" id="isAp" name="isAp" checked/>
+        <label for="isAp">AP</label><br>
+        <input type="checkbox" id="isAnanda" name="isAnanda" checked/>
+        <label for="isAnanda">Ananda</label><br>
+        <input type="checkbox" id="isSansiri" name="isSansiri" checked/>
+        <label for="isSansiri">Sansiri</label><br>
+        <input type="checkbox" id="isPreuksa" name="isPreuksa" checked/>
+        <label for="isPreuksa">Preuksa</label><br>
+        <input type="checkbox" id="isAllDev" name="isAllDev" checked/>
+        <label for="isAllDev">All</label><br>
+      </div>
+      <div class="controlGroup">
+        Transport<br/>
+        <input type="checkbox" id="isTrain" name="isTrain"/>
+        <label for="isTrain">รถไฟฟ้า</label><br>
+        <input type="checkbox" id="isToll" name="isToll" disabled/>
+        <label for="isToll" class="fade">ทางด่วน</label><br>
+        <!-- <input type="checkbox" id="isBts" name="isBts" disabled checked/>
+        <label for="isBts">BTS</label><br>
+        <input type="checkbox" id="isMrt" name="isMrt" disabled checked/>
+        <label for="isMrt">MRT</label><br>
+        <input type="checkbox" id="isArl" name="isArl" disabled checked/>
+        <label for="isArl">ARL</label><br> -->
+      </div>
+      <div class="controlGroup">
+        City<br/>
+        <input type="checkbox" id="isBangkok" name="isBangkok" checked/>
+        <label for="isBangkok">กรุงเทพ</label><br>
+        <input type="checkbox" id="isNont" name="isNont"/>
+        <label for="isNont">นนทบุรี</label><br>
+        <input type="checkbox" id="isSamut" name="isSamut"/>
+        <label for="isSamut">สมุทรปราการ</label><br>
+        <input type="checkbox" id="isAllProv" name="isAllProv" disabled />
+        <label for="isAllProv" class="fade">ทุกจังหวัด</label><br>
+      </div>
+      <div class="controlGroup">
+        <label for="floorFrom">ตั้งแต่ (ชั้น)</label>
+        <input type="number" id="floorFrom" value="0"/><br>
+
+        <label for="floorTo">ไม่เกิน (ชั้น)</label>
+        <input type="number" id="floorTo" value="40"/><br>
+
+        <br/>
+        <label for="unitFrom">ยูนิต ขั้นต่ำ</label>
+        <input type="number" id="unitFrom" value="0"/><br>
+
+        <label for="unitTo">ยูนิต ไม่เกิน</label>
+        <input type="number" id="unitTo" value="1000"/><br>
+
+        <!-- <br/>
+        <label for="percentParkingFrom" class="fade">ที่จอดรถ (%)</label>
+        <input type="number" id="percentParkingFrom" value="0" disabled /><br> -->
+      </div>
+      <div class="controlGroup">
+        <p>พบ <span id="found"></span> รายการ</p>
+        <button id="search" onclick=onSearch()>Search</button>
+      </div>
+    </div>
+
+    <div id="map"></div>
+
+    <script>
+
+      var map;
+
+      function genIcon(p) {
+        var priClass = ''
+        var content = Math.round(p.pri / 1000000.0 * 10) / 10
+        if (p.pri <= 10000000) {
+          priClass = parseInt(Math.ceil(p.pri / 1000000))
+        } else if (p.pri <= 20000000) {
+          priClass = 20
+        } else if (p.pri <= 30000000) {
+          priClass = 30
+        } else if (p.pri <= 50000000) {
+          priClass = 50
+        } else {
+          priClass = 'x'
+        }
+        return `<div class="box m${priClass}">${content}</div>`
+      }
+
+      function plotStations(map) {
+        stations.forEach(s => {
+          map.Overlays.add(new longdo.Marker({lat: s.lat, lon: s.lng}, {
+            icon: {
+              html: `<div class="station"></div>`
+            },
+            popup: {
+                html: `<div class="desc">
+                  ${s.typ} ${s.lin}<br/>
+                  ${s.nam}
+                </div>`
+              }
+          }))
+        })
+      }
+
+      function onSearch() {
+        var isHome = document.getElementById('isHome').checked
+        var isTownhome = document.getElementById('isTownhome').checked
+        var isCondo = document.getElementById('isCondo').checked
+        var priceFrom = document.getElementById('priceFrom').value
+        var priceTo = document.getElementById('priceTo').value
+        var floorFrom = document.getElementById('floorFrom').value
+        var floorTo = document.getElementById('floorTo').value
+        var yearFrom = document.getElementById('yearFrom').value
+        var yearTo = document.getElementById('yearTo').value
+        var isTrain = document.getElementById('isTrain').checked
+        var isBangkok = document.getElementById('isBangkok').checked
+        var isNont = document.getElementById('isNont').checked
+        var isSamut = document.getElementById('isSamut').checked
+
+        var isAp = document.getElementById('isAp').checked
+        var isAnanda = document.getElementById('isAnanda').checked
+        var isPreuksa = document.getElementById('isPreuksa').checked
+        var isSansiri = document.getElementById('isSansiri').checked
+        var isAllDev = document.getElementById('isAllDev').checked
+
+        map.Overlays.clear()
+        
+        var filtered = props.filter(p => {
+          return (
+              (
+                (p.typ == 'คอนโด' && isCondo) ||
+                (p.typ == 'ทาวน์โฮม' && isTownhome) ||
+                ((p.typ == 'บ้าน' || p.typ == 'บ้านแฝด') && isHome)
+              )
+              && p.pri >= priceFrom
+              && p.pri <= priceTo
+              && p.flr >= floorFrom
+              && p.flr <= floorTo
+              // && p.fin != ""
+              && parseInt(p.fin.substring(0,4)) >= yearFrom
+              && parseInt(p.fin.substring(0,4)) <= yearTo
+              && (
+                (p.pro == 'กรุงเทพมหานคร' && isBangkok) ||
+                (p.pro == 'นนทบุรี' && isNont) ||
+                (p.pro == 'สมุทรปราการ' && isSamut)
+              )
+              && (
+                (p.dev == 'Preuksa Real Estate Co.,Ltd.' && isPreuksa) ||
+                (p.dev == 'AP (Thailand) Co,. Ltd' && isAp) ||
+                (p.dev == 'SANSIRI PUB CO., LTD.' && isSansiri) ||
+                (p.dev == 'Ananda Development Public Company Limited' && isAnanda) ||
+                ( isAllDev )
+              )
+          )
+        })
+
+        document.getElementById("found").innerHTML = filtered.length
+        filtered.forEach(p => {
+          var marker = new longdo.Marker(
+            { lon: p.lng, lat: p.lat },
+            { icon: { html: genIcon(p)},
+              popup: {
+                html: `<div class="desc">
+                    ${p.nam} ${p.fin.substring(0,4) == '1970' || p.fin == '' ? '' : '('+p.fin.substring(0,4)+')'  }<br/>
+                    ${p.typ} ${p.dev}<br/>
+                    ${p.pri / 1000000.0}M<br/>
+                    ${p.kwa}, ${p.ket}<br/>
+                    ${p.flr} ชั้น 
+                    ${p.uni} Units
+                    ${p.par} ที่จอดรถ
+                  </div>`
+              }
+            }
+          )
+          map.Overlays.add(marker)
+        })
+      
+        if (isTrain) {
+          plotStations(map)
+        }
+
+        window.scrollTo(0, document.body.scrollHeight);
+      }
+
+      function init() {
+        map = new longdo.Map({
+          placeholder: document.getElementById('map'),
+          language: 'th'
+        });
+        map.Layers.setBase(longdo.Layers.ARCGIS_WORLD_LIGHT)
+        map.zoom(12)
+        var ctwPos = { lon:100.539087, lat:13.746636 }
+        map.location(ctwPos, true);
+        onSearch()
+      }
+    </script>
+
+    <body onload="init()"></body>
+
+    <div class="controlContainer">
+      <span>ขอบคุณ Data จาก <a target="_blank" href="https://gobestimate.com/data">Bestimate By Baania</a></span>
+      <span>API แผนที่ จาก <a target="_blank" href="https://map.longdo.com/">Longdo Map</a></span>
+      <span>Crafted By: Sarun W.</span>
+      <span>Version 1.0.0</span>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,103 @@
+#map {
+  width: 100vw;
+  height: 70vh;
+}
+
+body {
+  background: #fefefe;
+}
+
+* {
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+  font-weight: 300;
+}
+
+input[type="number"] {
+  width: 60px;
+}
+
+#priceFrom, #priceTo {
+  width: 90px;
+}
+
+#search {
+  font-size: 1.6em;
+  background: white;
+  border: 1px solid black;
+}
+
+.box {
+  font-size: 12px;
+  width: 20px;
+  height: 20px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.99;
+}
+
+.m1 { background: #1aa3ff;}
+.m2 { background: #1affc6;}
+.m3 { background: #1aff6e;}
+.m4 { background: #81ff1a;}
+.m5 { background: #beff1a;}
+.m6 { background: #ffff1a;}
+.m7 { background: #ffd11a;}
+.m8 { background: #ffba1a;}
+.m9 { background: #ff7d1a;}
+.m10 { background: #ff3c1a;}
+.m20 { background: #ff1a1a;}
+.m30 { background: #ac1066;}
+.m50 { background: #77546f;}
+.mx { background: #696969;}
+
+.desc {
+  width: 200px;
+  padding: 5px;
+  font-size: 1.1em;
+  background-color: white;
+}
+
+.poi {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: black;
+}
+
+.station {
+  width: 10px;
+  height: 10px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 1px solid black;
+}
+
+.controlContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  width: 100vw;
+}
+
+.controlGroup {
+  padding: 10px;
+}
+
+.fade {
+  color: #d5d5d5;
+}
+
+a {
+  text-decoration: none;
+  font-weight: bold;
+}
+a:visited {
+  color: black;
+}
