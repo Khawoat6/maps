@@ -2,7 +2,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://api.longdo.com/map/?key=c87f5969a2b7c7dc287362feaee47410"></script>
+    <script referrerpolicy="origin" src="https://api.longdo.com/map/?key=c87f5969a2b7c7dc287362feaee47410"></script>
     <script src="props.js"></script>
     <script src="stations.js"></script>
     <link rel="stylesheet" href="main.css">
@@ -214,15 +214,25 @@
       }
 
       function init() {
-        map = new longdo.Map({
-          placeholder: document.getElementById('map'),
-          language: 'th'
-        });
-        map.Layers.setBase(longdo.Layers.ARCGIS_WORLD_LIGHT)
-        map.zoom(12)
-        var ctwPos = { lon:100.539087, lat:13.746636 }
-        map.location(ctwPos, true);
-        onSearch()
+        try {
+          map = new longdo.Map({
+            placeholder: document.getElementById('map'),
+            language: 'th'
+          });
+          map.Layers.setBase(longdo.Layers.ARCGIS_WORLD_LIGHT)
+          map.zoom(12)
+          var ctwPos = { lon:100.539087, lat:13.746636 }
+          map.location(ctwPos, true);
+          onSearch()
+        } catch (error) {
+          
+          if (error instanceof ReferenceError) {
+            if (error.message == 'longdo is not defined')
+            alert('ระบบแผนที่ขัดข้อง อาจเกิดจากมีผู้ใช้งานเกินโควต้า')
+          } else {
+            alert(error)
+          }
+        }
       }
     </script>
 
@@ -232,7 +242,10 @@
       <span>ขอบคุณ Data จาก <a target="_blank" href="https://gobestimate.com/data">Bestimate By Baania</a></span>
       <span>API แผนที่ จาก <a target="_blank" href="https://map.longdo.com/">Longdo Map</a></span>
       <span>Crafted By: Sarun W.</span>
-      <span class="version">Version 1.0.3</span>
+      <span class="version">Version 1.1.0</span>
     </div>
   </body>
+  <!-- <script>
+    window.addEventListener('error', (event) => { alert(event.error) });
+  </script> -->
 </html>
